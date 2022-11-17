@@ -1,0 +1,45 @@
+<div class="card">
+  <!--File uploader-->
+  <p-fileUpload #form name="myfile[]" [customUpload]="true" (uploadHandler)="beforeUploadDialog($event, form)" [maxFileSize]="1000000">
+    <ng-template pTemplate="content">
+      <!--Dialog for name changing-->
+      <p-dialog header="Set a new name for file" [(visible)]="chooseNameDialog" [style]="{width: '70vw'}">
+        <input type="text" pInputText [(ngModel)]="tempFile.name">
+        <button (click)="uploadFile()" pButton icon="pi pi-check"></button>
+      </p-dialog>
+    </ng-template>
+  </p-fileUpload>
+</div>
+
+
+<div>
+<p-table *ngIf="newFiles.length" [value]="(fileObs|async)!">
+  <ng-template pTemplate="header">
+    <tr>
+        <th>Image</th>
+        <th>Name</th>
+        <th>Size</th>
+        <th>Type</th>
+        <th>More details</th>
+    </tr>
+</ng-template>
+<ng-template pTemplate="body" let-file>
+    <tr>
+      <td>  <p-image *ngIf="file.url" [src]="getSafeUrl(file.url)" alt="image" width="50" [preview]="true"></p-image></td>
+        <td>{{file.name}}</td>
+        <td>{{file.size}}</td>
+        <td>{{file.type}}</td>
+        <!--Dialog for displaying the chosen file/image-->
+        <td><p-button  (click)="showFileDialog(file)" icon="pi pi-external-link" label="show"></p-button>
+          <p-dialog *ngIf="displayFileDialog" header="Selected file" [(visible)]="displayFileDialog" [modal]="true">
+              <p-image  [src]="getSafeUrl(currentFile.url)" alt="image" width="500"></p-image>
+                <p >{{currentFile.size}} KB</p>
+              <p-button icon="pi pi-check" (click)="displayFileDialog=false" label="Done" styleClass="p-button-text"></p-button>
+          </p-dialog>
+        </td>
+      </tr>
+    </ng-template>
+  </p-table>
+
+
+</div>
